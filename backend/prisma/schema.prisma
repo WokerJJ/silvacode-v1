@@ -1,0 +1,54 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model users {
+  id         String    @id @default(uuid())
+  username   String    @unique
+  email      String    @unique
+  full_name  String?
+  created_at DateTime  @default(now())
+  gardens    gardens[]
+}
+
+model crops {
+  id          Int            @id @default(autoincrement())
+  name        String         @unique
+  description String?
+  climate     Json?
+  cycle_days  Int?
+  hacks       String[]
+  created_at  DateTime       @default(now())
+  garden_crop garden_crops[]
+}
+
+model gardens {
+  id          Int            @id @default(autoincrement())
+  user_id     String
+  user        users          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  name        String
+  slug        String
+  lat         Float?
+  lng         Float?
+  created_at  DateTime       @default(now())
+  garden_crop garden_crops[]
+
+  @@unique([user_id, slug], name: "userSlugUnique")
+}
+
+model garden_crops {
+  id        Int       @id @default(autoincrement())
+  garden    gardens   @relation(fields: [garden_id], references: [id], onDelete: Cascade)
+  garden_id Int
+  crop      crops     @relation(fields: [crop_id], references: [id], onDelete: Cascade)
+  crop_id   Int
+  sow_date  DateTime?
+  status    String    @default("planted")
+
+  @@unique([garden_id, crop_id, sow_date])
+}
