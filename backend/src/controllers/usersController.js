@@ -19,7 +19,7 @@ export const getUsers = async (req, res, next) => {
 // Obtener un usuario por ID
 export const getUserById = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.validatedParams;
         const user = await prisma.users.findUnique({
             where: { id },
             include: { gardens: true },
@@ -36,7 +36,7 @@ export const getUserById = async (req, res, next) => {
 // Crear usuario
 export const createUser = async (req, res, next) => {
     try {
-        const { username, email, full_name } = req.body;
+        const { username, email, full_name } = req.validatedBody;
 
         const newUser = await prisma.users.create({
             data: { username, email, full_name },
@@ -51,8 +51,8 @@ export const createUser = async (req, res, next) => {
 // Actualizar usuario
 export const updateUser = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { username, email, full_name } = req.body;
+        const { id } = req.validatedParams;
+        const { username, email, full_name } = req.validatedBody;
 
         const updated = await prisma.users.update({
             where: { id },
@@ -68,7 +68,7 @@ export const updateUser = async (req, res, next) => {
 // Eliminar usuario
 export const deleteUser = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.validatedParams;
 
         await prisma.users.delete({
             where: { id },

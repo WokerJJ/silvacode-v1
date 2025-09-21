@@ -11,6 +11,7 @@ model users {
   id         String    @id @default(uuid())
   username   String    @unique
   email      String    @unique
+  password   String // 🔑 encriptada con bcrypt
   full_name  String?
   created_at DateTime  @default(now())
   gardens    gardens[]

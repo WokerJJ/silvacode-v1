@@ -17,7 +17,7 @@ export const getCrops = async (req, res, next) => {
 // Obtener un usuario por ID
 export const getCropById = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.validatedParams;
         const crop = await prisma.crops.findUnique({
             where: { id: Number(id) },
             include: { garden: true },
@@ -34,7 +34,7 @@ export const getCropById = async (req, res, next) => {
 // Crear usuario
 export const createCrop = async (req, res, next) => {
     try {
-        const { name, description, climate, cycle_days, hacks } = req.body;
+        const { name, description, climate, cycle_days, hacks } = req.validatedBody;
 
         const newCrop = await prisma.crops.create({
             data: { name, description, climate, cycle_days, hacks },
@@ -48,8 +48,8 @@ export const createCrop = async (req, res, next) => {
 // Actualizar usuario
 export const updateCrop = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { name, description, climate, cycle_days, hacks }= req.body;
+        const { id } = req.validatedParams;
+        const { name, description, climate, cycle_days, hacks }= req.validatedBody;
 
         const updated = await prisma.crops.update({
             where: { id: Number(id) },
@@ -64,7 +64,7 @@ export const updateCrop = async (req, res, next) => {
 // Eliminar usuario
 export const deleteCrop = async (req, res, next) => {
     try {
-        const { id } = req.params;
+        const { id } = req.validatedParams;
 
         await prisma.crops.delete({
             where: { id: Number(id) },

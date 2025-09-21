@@ -44,12 +44,12 @@ export const createGarden = async (req, res, next) => {
 // Actualizar usuario
 export const updateGarden = async (req, res, next) => {
     try {
-        const { id } = req.params;
-        const { user_id, name, slug, lat, lng } = req.body;
+        const { id } = req.validatedParams;
+        const { name, slug, lat, lng } = req.validatedBody;
 
         const updated = await prisma.gardens.update({
             where: { id: Number(id) },
-            data: { user_id, name, slug, lat, lng },
+            data: { name, slug, lat, lng },
         });
         res.json(updated);
     } catch (err) {

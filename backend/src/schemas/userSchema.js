@@ -13,3 +13,7 @@ export const updateUserSchema = z.object({
     email: z.string().email().optional(),
     full_name: z.string().max(150).optional(),
 });
+
+export const userIdSchema = z.object({
+    id: z.string().uuid("El id del usuario debe ser un UUID válido"),
+});

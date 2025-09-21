@@ -9,6 +9,7 @@ async function main() {
             username: 'alice',
             email: 'alice@example.com',
             full_name: 'Alice Johnson',
+            password: 'alice123',
         },
     });
 
@@ -19,6 +20,7 @@ async function main() {
             username: 'bob',
             email: 'bob@example.com',
             full_name: 'Bob Smith',
+            password: 'bob12334',
         },
     });
 
