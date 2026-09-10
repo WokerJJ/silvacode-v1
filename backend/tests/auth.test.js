@@ -64,3 +64,48 @@ test("POST /auth/login con email que no existe es rechazado", async () => {
 
     assert.equal(res.status, 400);
 });
+
+test("POST /auth/logout invalida el token: pedidos posteriores con ese mismo token son rechazados", async () => {
+    await request(app)
+        .post("/auth/register")
+        .send({ username: "alice", email: "alice@example.com", password: "abc12345" });
+    const login = await request(app)
+        .post("/auth/login")
+        .send({ email: "alice@example.com", password: "abc12345" });
+
+    const logoutRes = await request(app)
+        .post("/auth/logout")
+        .set("Authorization", `Bearer ${login.body.token}`);
+    assert.equal(logoutRes.status, 204);
+
+    const afterLogout = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${login.body.token}`);
+    assert.equal(afterLogout.status, 403);
+});
+
+test("cerrar sesión de un token no afecta a otro token distinto del mismo usuario", async () => {
+    await request(app)
+        .post("/auth/register")
+        .send({ username: "alice", email: "alice@example.com", password: "abc12345" });
+    const session1 = await request(app)
+        .post("/auth/login")
+        .send({ email: "alice@example.com", password: "abc12345" });
+    const session2 = await request(app)
+        .post("/auth/login")
+        .send({ email: "alice@example.com", password: "abc12345" });
+
+    await request(app)
+        .post("/auth/logout")
+        .set("Authorization", `Bearer ${session1.body.token}`);
+
+    const stillWorks = await request(app)
+        .get("/api/users")
+        .set("Authorization", `Bearer ${session2.body.token}`);
+    assert.equal(stillWorks.status, 200);
+});
+
+test("las respuestas incluyen los headers de seguridad de helmet", async () => {
+    const res = await request(app).get("/api");
+    assert.equal(res.headers["x-content-type-options"], "nosniff");
+});

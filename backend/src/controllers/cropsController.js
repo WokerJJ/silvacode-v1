@@ -1,10 +1,10 @@
 import prisma from "../prisma.js";
 
 // ==============================
-// Controlador de Users
+// Controlador de Crops
 // ==============================
 
-// Obtener todos los usuarios
+// Obtener todos los cultivos
 export const getCrops = async (req, res, next) => {
     try {
         const crops = await prisma.crops.findMany();
@@ -14,13 +14,13 @@ export const getCrops = async (req, res, next) => {
     }
 };
 
-// Obtener un usuario por ID
+// Obtener un cultivo por ID
 export const getCropById = async (req, res, next) => {
     try {
         const { id } = req.validatedParams;
         const crop = await prisma.crops.findUnique({
             where: { id: Number(id) },
-            include: { garden: true },
+            include: { garden_crop: { include: { garden: true } } },
         });
 
         if (!crop) return res.status(404).json({ error: "Crop not found" });
@@ -31,7 +31,7 @@ export const getCropById = async (req, res, next) => {
     }
 };
 
-// Crear usuario
+// Crear cultivo
 export const createCrop = async (req, res, next) => {
     try {
         const { name, description, climate, cycle_days, hacks } = req.validatedBody;
@@ -45,7 +45,7 @@ export const createCrop = async (req, res, next) => {
     }
 };
 
-// Actualizar usuario
+// Actualizar cultivo
 export const updateCrop = async (req, res, next) => {
     try {
         const { id } = req.validatedParams;
@@ -61,7 +61,7 @@ export const updateCrop = async (req, res, next) => {
     }
 };
 
-// Eliminar usuario
+// Eliminar cultivo
 export const deleteCrop = async (req, res, next) => {
     try {
         const { id } = req.validatedParams;

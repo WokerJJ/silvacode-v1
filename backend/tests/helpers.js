@@ -9,6 +9,7 @@ export async function resetDb() {
     await prisma.gardens.deleteMany();
     await prisma.crops.deleteMany();
     await prisma.users.deleteMany();
+    await prisma.revoked_tokens.deleteMany();
 }
 
 // Registra y loguea un usuario de prueba, devuelve su token y su id — para

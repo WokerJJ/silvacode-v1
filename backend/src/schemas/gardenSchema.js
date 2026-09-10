@@ -5,7 +5,8 @@ export const createGardenSchema = z.object({
         .min(3, "El nombre debe tener mínimo 3 caracteres")
         .max(100, "El nombre no puede exceder 100 caracteres"),
     slug: z.string()
-        .regex(/^[a-z0-9-]+$/, "El slug solo puede contener minúsculas, números y guiones"),
+        .regex(/^[a-z0-9-]+$/, "El slug solo puede contener minúsculas, números y guiones")
+        .optional(),
     lat: z.number().optional(),
     lng: z.number().optional(),
 });

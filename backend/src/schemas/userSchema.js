@@ -5,6 +5,10 @@ export const createUserSchema = z.object({
         .min(3, "El username debe tener mínimo 3 caracteres")
         .max(50, "El username no puede exceder 50 caracteres"),
     email: z.string().email("Debe ser un correo válido"),
+    password: z.string()
+        .min(8, "La contraseña debe tener mínimo 8 caracteres")
+        .regex(/[a-zA-Z]/, "La contraseña debe contener al menos una letra")
+        .regex(/[0-9]/, "La contraseña debe contener al menos un número"),
     full_name: z.string().max(150).optional(),
 });
 

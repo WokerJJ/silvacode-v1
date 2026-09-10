@@ -53,3 +53,14 @@ model garden_crops {
 
   @@unique([garden_id, crop_id, sow_date])
 }
+
+// Un JWT es válido por firma hasta que expira, así que "cerrar sesión" no
+// puede invalidarlo por sí solo (es stateless). En vez de eso, logout guarda
+// acá el jti del token cerrado hasta que venza por su cuenta, y
+// authMiddleware chequea esta tabla en cada request además de verificar la
+// firma. expires_at es la misma expiración del JWT (1h desde el login), así
+// que la entrada deja de importar apenas pasa esa fecha.
+model revoked_tokens {
+  jti        String   @id
+  expires_at DateTime
+}
