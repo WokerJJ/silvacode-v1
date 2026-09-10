@@ -1,0 +1,52 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    # Base de datos de test efímera, solo para este job — nunca es la misma
+    # silvacode_test que usás en local.
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: silvacode_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    defaults:
+      run:
+        working-directory: backend
+
+    env:
+      # No hace falta un .env.test acá: env.js cae de nuevo a .env (ENOENT
+      # silencioso), y estas variables ya están en process.env directamente.
+      DATABASE_URL: postgresql://postgres:postgres@localhost:5432/silvacode_test?schema=public
+      JWT_SECRET: ci_only_secret_never_used_outside_actions
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - run: npm ci
+
+      - run: npx prisma migrate deploy
+
+      - run: npm test

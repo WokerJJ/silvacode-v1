@@ -1,0 +1,7 @@
+# Archivos de configuración del IDE (JetBrains) — cada quien tiene los suyos,
+# no deberían compartirse entre máquinas.
+.idea/
+
+# Basura de macOS/Windows
+.DS_Store
+Thumbs.db
